@@ -23,7 +23,7 @@ public class Converter {
 		Scanner in = new Scanner(System.in);
 		PrintWriter writer = new PrintWriter(file);
 		
-		System.out.println("What are the attributes?");
+		System.out.println("What are the attributes?"); //(enter in format: attribute1, attribute2,...,class) see output.csv
 		writer.println(in.next());
 
 		while(s.hasNext()){
