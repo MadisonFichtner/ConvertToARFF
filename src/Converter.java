@@ -59,6 +59,7 @@ public class Converter {
 
 		writer.close();
 		in.close();
+		reader.close();
 
 
 		csvToArff(csvFile);
@@ -79,7 +80,10 @@ public class Converter {
             // load the CSV file (input file)
             CSVLoader loader = new CSVLoader();
             loader.setSource(csvFile);
-
+            String[] options = new String[2];
+            options[0] = "-N";					//forces an attribute to be nominal type
+            options[1] = "last";				//forces the last attribute(class) to be nominal
+            loader.setOptions(options);
 
             Instances data = loader.getDataSet();
             System.out.println(data);
