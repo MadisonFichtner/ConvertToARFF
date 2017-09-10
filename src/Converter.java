@@ -23,12 +23,18 @@ public class Converter {
 		Scanner in = new Scanner(System.in);
 		PrintWriter writer = new PrintWriter(file);
 		
-		System.out.println("What are the attributes?"); //(enter in format: attribute1, attribute2,...,class) see output.csv
-		writer.println(in.next());
+		System.out.println("How many attributes? (Not including class)");
+		int numAttributes = in.nextInt();
+		for(int i=0; i<numAttributes; i++){
+			System.out.println("What is attribute " + (i+1) + "? (No spaces)");
+			writer.print(in.next() + ",");
+		}
+		writer.println("Class");
 
 		while(s.hasNext()){
 			writer.println(s.next());	//prints each line of data file to output file
 		}
+		
 		writer.close();
 		s.close();
 		in.close();
