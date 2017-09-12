@@ -1,51 +1,49 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args){
-		Converter converter = new Converter();
-		Scanner in = new Scanner(System.in);
+		Converter converter = new Converter();							//create a new instance of the converter
+		Scanner in = new Scanner(System.in);							//create a new instance of the scanner
 
-		int selection = 0;
-		boolean valid = true;
+		int selection = 0;												//variable for user choice
+		boolean valid = true;											//whether or not user choice is valid, assumes it is for simplicity
 		do {	
 			System.out.println("Do you want to convert data from a file(Enter '1') or from a URL(Enter '2')?");
-			try {
-				selection = in.nextInt();
+			try {										
+				selection = in.nextInt();								//if possible, user input is either 1 or 2
 			}
-			catch (Exception e) {
-				System.out.printf("Invalid input.\n\n");
-				in.nextLine();
-				valid = false;
-				continue;
+			catch (Exception e) {										//if incorrect input,
+				System.out.printf("Invalid input.\n\n");				//tell user,
+				in.nextLine();											//clear scanner buffer
+				valid = false;											//set valid input flag to false
+				continue;												//loop again
 			}
-			switch (selection) {
+			switch (selection) {										//switch on selection choice
 				case 1: {
 					System.out.println("Enter the name of the file in the project folder");
 					converter.getDataFile(in.next());
 					break;
 				}
-				case 2: {
-					boolean valid1 = true;
+				case 2: {			
+					boolean valid1 = true;								//if second input (URL) is valid or not, assumes true for simplicity
 					do {
-						try {
+						try {											
 							System.out.println("Enter the URL to the data file.");
-							converter.readURL(in.next());
-						} catch (IOException e) {
+							converter.readURL(in.next());				//hopefully input is a correct URL, otherwise
+						} catch (Exception e) {
 							System.out.printf("That did not work. Check URL and try again.\n\n");
-							in.nextLine();
-							valid1 = false;
+							in.nextLine();								//clear buffer
+							valid1 = false;								//indicate bad input and loop again
 						}
 					} while (valid1 == false);
 					break;
 				}
 				default: {
-					System.out.printf("Invalid number.\n\n");
-					valid = false;
+					System.out.printf("Invalid number.\n\n");			//if user enters integer but not 1 or 2
+					valid = false;										//flag it as bad input
 				}
 			}
-		} while (valid == false);
-		in.close();
+		} while (valid == false);										//keep looping until input is valid
+		in.close();														//close scanner
 	}
 }
