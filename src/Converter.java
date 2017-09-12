@@ -68,13 +68,6 @@ public class Converter {
 	public void csvToArff(File csvFile){
         File arffFile = new File("output.arff");
 
-        try{
-
-        }
-        catch(Exception e){
-        	e.printStackTrace();
-        }
-
         try {
 
             // load the CSV file (input file)
@@ -86,7 +79,7 @@ public class Converter {
             loader.setOptions(options);
 
             Instances data = loader.getDataSet();
-            System.out.println(data);
+            System.out.println("Finished writing data to file.");
 
             // save as an  ARFF (output file)
             ArffSaver saver = new ArffSaver();
