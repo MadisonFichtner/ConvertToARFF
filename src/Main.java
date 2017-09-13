@@ -20,8 +20,7 @@ public class Main {
 			}
 			switch (selection) {										//switch on selection choice
 				case 1: {
-					System.out.println("Enter the name of the file in the project folder");
-					converter.getDataFile(in.next());
+					converter.getDataFile();
 					break;
 				}
 				case 2: {			
