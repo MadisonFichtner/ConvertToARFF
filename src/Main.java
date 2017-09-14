@@ -1,5 +1,11 @@
 import java.util.Scanner;
 
+
+/*
+ * Creates an instance of the converter class
+ * Gets input from user either the name of a data file
+ * or of a URL and passes that into the converter functions
+ */
 public class Main {
 	public static void main(String[] args){
 		Converter converter = new Converter();							//create a new instance of the converter
@@ -7,9 +13,9 @@ public class Main {
 
 		int selection = 0;												//variable for user choice
 		boolean valid = true;											//whether or not user choice is valid, assumes it is for simplicity
-		do {	
+		do {
 			System.out.println("Do you want to convert data from a file(Enter '1') or from a URL(Enter '2')?");
-			try {										
+			try {
 				selection = in.nextInt();								//if possible, user input is either 1 or 2
 			}
 			catch (Exception e) {										//if incorrect input,
@@ -23,10 +29,10 @@ public class Main {
 					converter.getDataFile();
 					break;
 				}
-				case 2: {			
+				case 2: {
 					boolean valid1 = true;								//if second input (URL) is valid or not, assumes true for simplicity
 					do {
-						try {											
+						try {
 							System.out.println("Enter the URL to the data file.");
 							converter.readURL(in.next());				//hopefully input is a correct URL, otherwise
 						} catch (Exception e) {
