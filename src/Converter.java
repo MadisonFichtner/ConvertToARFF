@@ -148,17 +148,9 @@ public class Converter {
         }
 
         //prints out class attribute
-        System.out.println("How many classes are there?");
-		int numClasses = in.nextInt();
-		writer.print("@ATTRIBUTE CLASS {");
-		for(int i=0; i<numClasses; i++){
-			System.out.println("What is class " + (i+1) + "?");
-			writer.print(in.next());
-			if(i != numClasses-1)
-				writer.print(",");
-		}
 
-		writer.println("}\n");
+        System.out.println("Enter the class values in the form {class1,class2,...}");
+		writer.println("@ATTRIBUTE CLASS " + in.next() + "\n");
 
         s.useDelimiter(" ");
         s.skip(",Class");
@@ -186,6 +178,7 @@ public class Converter {
 		System.out.println("\t3) REAL");
 		System.out.println("\t4) STRING");
 		System.out.println("\t5) DATE");
+		System.out.println("\t6) NOMINAL");
 
 		in.nextLine();
 		int selection = in.nextInt();
@@ -207,6 +200,9 @@ public class Converter {
 		case 5:
 			type = "DATE";
 			break;
+		case 6:
+			System.out.println("Enter values in format: {value1,value2,...}");
+			type = in.next();
 		}
 		return type;
 	}
