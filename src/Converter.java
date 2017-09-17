@@ -21,21 +21,24 @@ public class Converter {
 	 * Prompts user for filename then passes the file to dataToCsv
 	 */
 	public void getDataFile(){
-		File dataFile;
-
-		boolean valid = true;
+		File dataFile = null;
+		BufferedReader reader = null;
+		boolean valid = true;																					//flag for input validity
 		do {
-			System.out.print("Please enter the name of a file located in the project folder: ");
 			try {
-				String filename = in.next();
+				System.out.print("Please enter the name of a file located in the project folder: ");
+				String filename = in.next();	
 				dataFile = new File(filename);
-				dataToCsv(dataFile);
-			} catch (Exception e) {
-				System.out.printf("File not found. Please try again.\n\n");
-				in.nextLine();
-				valid = false;
+				reader = new BufferedReader(new FileReader(dataFile));									
+				valid = true;																					//assume file process works, but if not
+			}
+			catch (Exception e) {																				//catch the exception thrown, print error message,
+				System.out.printf("That file was not found. Check and try again.\n\n");
+				in.nextLine();																					//clear buffer
+				valid = false;																					//flag input for repeated process -> prompt user again
 			}
 		} while (valid == false);
+		dataToCsv(reader);																						//send data file to the next method
 	}
 
 	/*
@@ -50,40 +53,39 @@ public class Converter {
 		PrintWriter writer = new PrintWriter(data);
 
 		while(s.hasNext()){
-			writer.println(s.next());	//prints each line of data file to output file
+			writer.println(s.next());				//prints each line of data file to output file
 		}
 		s.close();
 		writer.close();
-
-		dataToCsv(data);
+		BufferedReader reader = new BufferedReader(new FileReader(data));
+		dataToCsv(reader);
 	}
 
 	/*
 	 * Converts data file to a csv file with a header containing attribute information
 	 * @param data The file containing the data to work with
 	 */
-	public void dataToCsv(File data) {
-		File csvFile = new File("output.csv");
+	private void dataToCsv(BufferedReader reader) {
+		File csvFile = new File("output.csv");											//create output file
 		PrintWriter writer = null;
-		BufferedReader reader = null;
 		try {
-			writer = new PrintWriter(csvFile);
-			reader = new BufferedReader(new FileReader(data));
+			writer = new PrintWriter(csvFile);											//create writer for printing to file
 		}
 		catch (Exception e) {
-			System.out.println("Something went wrong generating output file.");		//fix this --> test 1, filename = asdf
+			System.out.println("Something went wrong generating output file.");
 		}
 
 		int numAttributes = 0;
-		boolean valid = true;
-		do {		//prompt user for number of attributes
+		boolean valid = true;															//flag for input validity
+		do {																			//prompt user for number of attributes
 			try {
 				System.out.println("How many attributes? (Not including class)");
 				numAttributes = in.nextInt();
+				valid = true;															//assume input is valid, but if not
 			}
 			catch (InputMismatchException e) {
 				System.out.printf("That's not a number. Try again.\n\n");
-				in.nextLine();
+				in.nextLine();															//clear buffer, flag and prompt again
 				valid = false;
 			}
 		} while (valid == false);
@@ -93,7 +95,7 @@ public class Converter {
 			System.out.println("What is attribute " + (i+1) + "?");
 			writer.print(in.next() + ",");
 		}
-		writer.println("Class");
+		writer.println("Class");														//end with "Class" for ARFF file
 
 		String line;
 		//write data to file
@@ -111,9 +113,8 @@ public class Converter {
 		} catch (Exception e) {
 			System.out.println("Something went wrong trying to close the reader.");
 		}
-
-
-		csvToArff(csvFile, numAttributes);
+		
+		csvToArff(csvFile, numAttributes);												//then convert CSV file to ARFF file
 	}
 
 	/*
@@ -121,17 +122,17 @@ public class Converter {
 	 * @param csvFile The csv file to be converted
 	 * @param numAttributes The number of attributes in the header of the file
 	 */
-	public void csvToArff(File csvFile, int numAttributes){
+	private void csvToArff(File csvFile, int numAttributes){
         File arffFile = new File("output.arff");
         Scanner s = null;
         PrintWriter writer = null;
 
-        try{
+        try {
 	        s = new Scanner(csvFile);
 			writer = new PrintWriter(arffFile);
         }
         catch(Exception e){
-        	e.printStackTrace();
+        	System.out.println("Something went wrong.");
         }
 
         //prompt user for relation and write to header
@@ -148,9 +149,29 @@ public class Converter {
         }
 
         //prints out class attribute
+        int numClasses = 0;
+        boolean valid = true;
+        do {
+	        try {
+		        System.out.println("How many classes are there?");
+				numClasses = in.nextInt();
+				valid = true;
+	        }
+	        catch (Exception e) {
+	        	System.out.println("That is not a number.\n");
+	        	in.nextLine();
+	        	valid = false;
+	        }
+        } while (valid == false);
+		writer.print("@ATTRIBUTE CLASS {");
+		for(int i=0; i<numClasses; i++){
+			System.out.println("What is class " + (i+1) + "?");
+			writer.print(in.next());
+			if(i != numClasses-1)
+				writer.print(",");
+		}
 
-        System.out.println("Enter the class values in the form {class1,class2,...}");
-		writer.println("@ATTRIBUTE CLASS " + in.next() + "\n");
+		writer.println("}\n");
 
         s.useDelimiter(" ");
         s.skip(",Class");
@@ -172,16 +193,25 @@ public class Converter {
 	 * @return type The string describing the attribute type
 	 */
 	String getAttributeType(int number){
-		System.out.println("What type is attribute " + (number+1) + "?");
-		System.out.println("\t1) NUMERIC");
-		System.out.println("\t2) INTEGER");
-		System.out.println("\t3) REAL");
-		System.out.println("\t4) STRING");
-		System.out.println("\t5) DATE");
-		System.out.println("\t6) NOMINAL");
-
-		in.nextLine();
-		int selection = in.nextInt();
+		int selection = 0;
+		boolean valid = true;
+		do {
+			try {
+				System.out.println("What type is attribute " + (number+1) + "?");
+				System.out.println("\t1) NUMERIC");
+				System.out.println("\t2) INTEGER");
+				System.out.println("\t3) REAL");
+				System.out.println("\t4) STRING");
+				System.out.println("\t5) DATE");
+				selection = in.nextInt();
+				valid = true;
+			}
+			catch (Exception e) {
+				System.out.println("That is not a number.\n");
+				in.nextLine();
+				valid = false;
+			}
+		} while (valid == false);
 
 		String type = "NUMERIC";
 		switch(selection){
@@ -200,9 +230,8 @@ public class Converter {
 		case 5:
 			type = "DATE";
 			break;
-		case 6:
-			System.out.println("Enter values in format: {value1,value2,...}");
-			type = in.next();
+		default:
+			System.out.printf("Out of range. Defaulting to 1.\n\n");
 		}
 		return type;
 	}
