@@ -1,10 +1,17 @@
 import java.util.Scanner;
 
 
-/*
- * Creates an instance of the converter class
- * Gets input from user either the name of a data file
- * or of a URL and passes that into the converter functions
+/* Machine Learning: Soft Computing Project 1
+ * 9/18/2017
+ * 
+ * The main class controls the flow of the software,
+ * which generally looks like:
+ * 1) Creates an instance of the converter class
+ * 2) Gets input from user either the name of a data file
+ * 	  or of a URL and passes that into the converter functions,
+ *    which take care of converting and outputting the file.
+ *    
+ * Authors: Bryan Plant, Madison Fichtner, Nate Tranel
  */
 public class Main {
 	public static void main(String[] args){
