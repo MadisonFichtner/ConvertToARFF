@@ -9,14 +9,14 @@ import java.util.Scanner;
 
 /* Machine Learning: Soft Computing Project 1
  * 9/18/2017
- * 
+ *
  * ARFF File Conversion Software
- * 
+ *
  * The Converter class receives data in the form of a filename or
- * web URL from user input from the main class. It then 
+ * web URL from user input from the main class. It then
  * converts this data into a file with a proper header, which is
  * then converted to an ARFF file to be read by WEKA.
- * 
+ *
  * Authors: Bryan Plant, Madison Fichtner, Nate Tranel
  */
 
@@ -36,9 +36,9 @@ public class Converter {
 		do {
 			try {
 				System.out.print("Please enter the name of a file located in the project folder: ");
-				String filename = in.next();	
+				String filename = in.next();
 				dataFile = new File(filename);
-				reader = new BufferedReader(new FileReader(dataFile));									
+				reader = new BufferedReader(new FileReader(dataFile));
 				valid = true;																					//assume file process works, but if not
 			}
 			catch (Exception e) {																				//catch the exception thrown, print error message,
@@ -50,14 +50,14 @@ public class Converter {
 		dataToCsv(reader);																						//send data file to the next method
 	}
 
-	
-	
+
+
 	/*
 	 * Receives a web URL to a data file, writes the data to a file
 	 * and passes the file to dataToCsv
 	 * @param link -> A string containing the URL of data file
 	 */
-	
+
 	public void readURL(String link) throws IOException {
 		URL url = new URL(link);														//create a pointer to file on database
 		Scanner s = new Scanner(url.openStream());										//create a scanner with url
@@ -73,13 +73,13 @@ public class Converter {
 		dataToCsv(reader);
 	}
 
-	
-	
+
+
 	/*
 	 * Converts data file to a CSV file with a header containing attribute information
 	 * @param reader -> The reader containing the file data to manipulate
 	 */
-	
+
 	private void dataToCsv(BufferedReader reader) {
 		File csvFile = new File("output.csv");											//create output file
 		PrintWriter writer = null;
@@ -128,7 +128,7 @@ public class Converter {
 		} catch (Exception e) {
 			System.out.println("Something went wrong trying to close the reader.");
 		}
-		
+
 		csvToArff(csvFile, numAttributes);												//then convert CSV file to ARFF file
 	}
 
@@ -201,13 +201,13 @@ public class Converter {
 		in.close();																		//close the input and output files; no longer needed
 	}
 
-	
+
 	/*
 	 * Prompts the user for the type of an attribute
 	 * @param number -> The attribute number
 	 * @return type -> The string describing the attribute type
 	 */
-	
+
 	String getAttributeType(int number){
 		int selection = 0;
 		boolean valid = true;
@@ -219,6 +219,7 @@ public class Converter {
 				System.out.println("\t3) REAL");
 				System.out.println("\t4) STRING");
 				System.out.println("\t5) DATE");
+				System.out.println("\t6) NOMINAL");
 				selection = in.nextInt();
 				valid = true;
 			}
@@ -246,6 +247,9 @@ public class Converter {
 		case 5:
 			type = "DATE";
 			break;
+		case 6: //Nominal
+			System.out.println("Enter the values in the form {v1,v2,v3...}");
+			type = in.next();
 		default:
 			System.out.println("Out of range. Defaulting to 1.\n");						//defaults to 1 if input is out of range; numeric type is most common
 		}
