@@ -7,16 +7,25 @@ import java.net.URL;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-/*
+/* Machine Learning: Soft Computing Project 1
+ * 9/18/2017
+ * 
+ * ARFF File Conversion Software
+ * 
  * The Converter class receives data in the form of a filename or
- * web URL
- * Converts this data into a file with a header which is then converted
- * to an ARFF file to be read by WEKA
+ * web URL from user input from the main class. It then 
+ * converts this data into a file with a proper header, which is
+ * then converted to an ARFF file to be read by WEKA.
+ * 
+ * Authors: Bryan Plant, Madison Fichtner, Nate Tranel
  */
+
 public class Converter {
+	Scanner in = null;
 
-	Scanner in = new Scanner(System.in);
-
+	public Converter() {
+		in = new Scanner(System.in);																			//initialize scanner for user input
+	}
 	/*
 	 * Prompts user for filename then passes the file to dataToCsv
 	 */
@@ -33,7 +42,7 @@ public class Converter {
 				valid = true;																					//assume file process works, but if not
 			}
 			catch (Exception e) {																				//catch the exception thrown, print error message,
-				System.out.printf("That file was not found. Check and try again.\n\n");
+				System.out.println("That file was not found. Check and try again.\n");
 				in.nextLine();																					//clear buffer
 				valid = false;																					//flag input for repeated process -> prompt user again
 			}
@@ -41,19 +50,22 @@ public class Converter {
 		dataToCsv(reader);																						//send data file to the next method
 	}
 
+	
+	
 	/*
 	 * Receives a web URL to a data file, writes the data to a file
 	 * and passes the file to dataToCsv
-	 * @param link A string containing the URL of data file
+	 * @param link -> A string containing the URL of data file
 	 */
+	
 	public void readURL(String link) throws IOException {
-		URL url = new URL(link);					//create a pointer to file on database
-		Scanner s = new Scanner(url.openStream());	//create a scanner with url
+		URL url = new URL(link);														//create a pointer to file on database
+		Scanner s = new Scanner(url.openStream());										//create a scanner with url
 		File data = new File("temp.data");
 		PrintWriter writer = new PrintWriter(data);
 
 		while(s.hasNext()){
-			writer.println(s.next());				//prints each line of data file to output file
+			writer.println(s.next());													//prints each line of data file to output file
 		}
 		s.close();
 		writer.close();
@@ -61,10 +73,13 @@ public class Converter {
 		dataToCsv(reader);
 	}
 
+	
+	
 	/*
-	 * Converts data file to a csv file with a header containing attribute information
-	 * @param data The file containing the data to work with
+	 * Converts data file to a CSV file with a header containing attribute information
+	 * @param reader -> The reader containing the file data to manipulate
 	 */
+	
 	private void dataToCsv(BufferedReader reader) {
 		File csvFile = new File("output.csv");											//create output file
 		PrintWriter writer = null;
@@ -84,7 +99,7 @@ public class Converter {
 				valid = true;															//assume input is valid, but if not
 			}
 			catch (InputMismatchException e) {
-				System.out.printf("That's not a number. Try again.\n\n");
+				System.out.println("That's not a number. Try again.\n");
 				in.nextLine();															//clear buffer, flag and prompt again
 				valid = false;
 			}
@@ -118,17 +133,17 @@ public class Converter {
 	}
 
 	/*
-	 * Converts file with header to arff file with appropriate header
-	 * @param csvFile The csv file to be converted
-	 * @param numAttributes The number of attributes in the header of the file
+	 * Converts file with header to ARFF file with appropriate header
+	 * @param csvFile -> The CSV file to be converted
+	 * @param numAttributes -> The number of attributes in the header of the file
 	 */
 	private void csvToArff(File csvFile, int numAttributes){
-        File arffFile = new File("output.arff");
+        File arffFile = new File("output.arff");										//create output file
         Scanner s = null;
         PrintWriter writer = null;
 
         try {
-	        s = new Scanner(csvFile);
+	        s = new Scanner(csvFile);													//read in the CSV file
 			writer = new PrintWriter(arffFile);
         }
         catch(Exception e){
@@ -141,7 +156,7 @@ public class Converter {
 		writer.println(in.next());
 		writer.println();
 
-		//read header line of csv file and print attribute information to header of arff file
+		//read header line of CSV file and print attribute information to header of ARFF file
         s.useDelimiter(",");
         for(int i = 0; i < numAttributes; i++){
         	String type = getAttributeType(i);
@@ -163,7 +178,7 @@ public class Converter {
 	        	valid = false;
 	        }
         } while (valid == false);
-		writer.print("@ATTRIBUTE CLASS {");
+		writer.print("@ATTRIBUTE CLASS {");												//print specific section headers to output file
 		for(int i=0; i<numClasses; i++){
 			System.out.println("What is class " + (i+1) + "?");
 			writer.print(in.next());
@@ -178,26 +193,27 @@ public class Converter {
 
 		writer.print("@DATA");
 		while(s.hasNext()){
-			writer.println(s.next());	//prints each line of data file to output file
+			writer.println(s.next());													//prints each line of data file to output file
 		}
 
 		writer.close();
 		s.close();
-		in.close();
-
+		in.close();																		//close the input and output files; no longer needed
 	}
 
+	
 	/*
 	 * Prompts the user for the type of an attribute
-	 * @param number The attribute number
-	 * @return type The string describing the attribute type
+	 * @param number -> The attribute number
+	 * @return type -> The string describing the attribute type
 	 */
+	
 	String getAttributeType(int number){
 		int selection = 0;
 		boolean valid = true;
 		do {
 			try {
-				System.out.println("What type is attribute " + (number+1) + "?");
+				System.out.println("What type is attribute " + (number+1) + "?");		//print menu and continue prompting user until input is valid
 				System.out.println("\t1) NUMERIC");
 				System.out.println("\t2) INTEGER");
 				System.out.println("\t3) REAL");
@@ -231,7 +247,7 @@ public class Converter {
 			type = "DATE";
 			break;
 		default:
-			System.out.printf("Out of range. Defaulting to 1.\n\n");
+			System.out.println("Out of range. Defaulting to 1.\n");						//defaults to 1 if input is out of range; numeric type is most common
 		}
 		return type;
 	}
